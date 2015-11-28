@@ -1,0 +1,50 @@
+KWayGraphPartitioning.xcodeproj/
+KWayGraphPartitioning.xcodeproj/
+/Project.xcodeproj/
+KWayGraphPartitioning.build/
+.idea/
+.ignore
+.DS_Store
+
+util/output.*
+util/*.pdf
+CTestTestfile.*
+Testing
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+CMakeScripts/
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+install_manifest.txt
+bin/
+
