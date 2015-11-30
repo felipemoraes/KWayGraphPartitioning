@@ -30,8 +30,8 @@ int main(int argc, char** argv){
     }
     Graph graph(infile);
     vector< pair<int, int> > nodes;
-    cout << "Number of Vertices: " << graph.V << endl;
-    graph.print();
+    //cout << "Number of Vertices: " << graph.V << endl;
+    //graph.print();
     float sum = 0;
     for (int i = 0; i < graph.V; ++i) {
         nodes.push_back(make_pair(i,graph.size[i]));
@@ -44,6 +44,7 @@ int main(int argc, char** argv){
     while (solver.best_so_far > 0 && num_iterations < graph.E) {
         solver.pass();
         num_iterations++;
+        cout << "Iteration : " << num_iterations << " Global cost: " << solver.global_cost << endl;
     }
     solver.best_bucket.print();
     cout << solver.best_so_far << endl;

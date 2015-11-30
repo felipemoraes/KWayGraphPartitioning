@@ -49,7 +49,7 @@ void Bucket::init(vector< pair <int,int> > nodes){
     int k = 0;
     sort(nodes.begin(), nodes.end(), pairCompare);
     for (int i = 0; i < nodes.size(); ++i) {
-        cout << nodes[i].first << " size " << nodes[i].second << endl;
+        //cout << nodes[i].first << " size " << nodes[i].second << endl;
         if (!this->is_full(k, nodes[i].second)) {
             this->add(k,nodes[i].first, nodes[i].second);
         } else {

@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <vector>
+#include <algorithm>
 #include "graph.h"
 #include "bucket.h"
 #include <random>

@@ -25,9 +25,9 @@ Solver::Solver(Graph graph,Bucket bucket){
     }
     best_so_far = global_cost;
     this->best_bucket = bucket;
-    bucket.print();
-    cout << global_cost << endl;
-    cout << endl << endl;
+    //bucket.print();
+    //cout << global_cost << endl;
+    //cout << endl << endl;
 }
 
 bool pairCompareFloat(const std::pair<int, float>& firstElem, const std::pair<int, float>& secondElem) {
@@ -111,7 +111,7 @@ void Solver::pass(){
     if (best_so_far > global_cost) {
         best_so_far = global_cost;
     }
-    cout << global_cost << endl;
+    //cout << global_cost << endl;
    // bucket.print();
 }
 
