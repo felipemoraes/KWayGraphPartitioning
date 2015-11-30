@@ -3,8 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 #include <limits.h>
 
+using namespace std;
 
 class AdjListNode {
 public:
@@ -21,10 +23,16 @@ public:
 
 class Graph {
 public:
-    int V;
+    int V,E;
     AdjList* array;
-    Graph(int V);
+    Graph(int V, int E);
+    Graph(string filename);
+    Graph();
     void addEdge(int src, int dest, int weight);
+    void addNode(int src, int size);
+    void print();
+    int* size;
+    void readFromFile(string filename);
 };
 
 #endif
