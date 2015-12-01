@@ -25,6 +25,11 @@ IF (APPLE)
 SET(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} "/usr/lib/")
 ENDIF (APPLE)
 
+find_package(Boost 1.58.0 COMPONENTS system thread coroutine context REQUIRED)
+message("Boost include dir: ${Boost_INCLUDE_DIR}")
+message("Boost libraries: ${Boost_LIBRARIES}")
+include_directories(${Boost_INCLUDE_DIR})
+
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(lib)

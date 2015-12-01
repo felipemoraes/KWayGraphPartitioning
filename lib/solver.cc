@@ -8,6 +8,7 @@ Solver::Solver(Graph graph,Bucket bucket){
     this->pl = 0.95;
     this->pb = 1.00;
     global_cost = 0;
+   
     for (int i = 0; i < graph.V; ++i) {
         float cost = 0;
         float size_neighbords = 0;
@@ -21,8 +22,11 @@ Solver::Solver(Graph graph,Bucket bucket){
             size_neighbords += neighbor->weight;
             neighbor = neighbor->next;
         }
-        local_cost.push_back(make_pair(i, cost/size_neighbords));
+        auto t = local_cost.push(cost_function(i, cost/size_neighbords));
+        tab_handle.push_back(t);
+
     }
+    cout << "Inicio "<< local_cost.size() << endl;
     best_so_far = global_cost;
     this->best_bucket = bucket;
     //bucket.print();
@@ -68,17 +72,24 @@ int Solver::select_best_to_change(int node, int k){
 
 
 void Solver::pass(){
-    int d = 1;
-    vector < pair<int,float> > local_cost_copy(local_cost);
-    sort(local_cost_copy.begin(), local_cost_copy.end(), pairCompareFloat);
+
+    
     
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0, 1);
     std::uniform_real_distribution<> dis_label(0, bucket.noparts);
-    for (auto it = local_cost_copy.begin(); it!=local_cost_copy.end(); ++it) {
-        int select_vertex = it->first;
-        int new_label = bucket.label[it->first];
+    vector<cost_function> k_vertices;
+    for (int i = 0; i < bucket.noparts; ++i) {
+        k_vertices.push_back(local_cost.top());
+        local_cost.pop();
+    }
+    for (auto it : k_vertices) {
+        tab_handle[it.id] = local_cost.push(it);
+    }
+     for (auto it : k_vertices) {
+        int select_vertex = it.id;
+        int new_label = bucket.label[select_vertex];
         int old_label = new_label;
         int best_change = old_label;
         // disturbing
@@ -87,7 +98,7 @@ void Solver::pass(){
             new_label = best_label(select_vertex);
             //maintain balance
             best_change = select_best_to_change(select_vertex, new_label);
-            bucket.label[it->first] = new_label;
+            bucket.label[select_vertex] = new_label;
         } else {
             new_label = (int) dis_label(gen);
             best_change = select_best_to_change(select_vertex, new_label);
@@ -95,19 +106,13 @@ void Solver::pass(){
             
         }
         
+        //AdjListNode *tmp = graph.array[select_vertex].head;
 
         bucket.label[best_change] = old_label;
-        update_costs();
-        
-        
-        
-        if (d == bucket.noparts){
-            break;
-        }
-        d++;
+        update_local_costs(select_vertex,best_change);
     }
     
-    
+    update_global_cost();
     if (best_so_far > global_cost) {
         best_so_far = global_cost;
     }
@@ -115,10 +120,35 @@ void Solver::pass(){
    // bucket.print();
 }
 
-void Solver::update_costs(){
-
-    global_cost = 0;
-    for (int i = 0; i < graph.V; ++i) {
+void Solver::update_local_costs(int vertex1, int vertex2){
+    unordered_set<int> nodes_to_update;
+    AdjListNode *tmp = graph.array[vertex1].head;
+    float cost = 0;
+    float size_neighbords = 0;
+    int label = bucket.label[vertex1];
+    while (tmp != NULL) {
+        if (bucket.label[tmp->dest] != label) {
+            cost += tmp->weight;
+        }
+        nodes_to_update.insert(tmp->dest);
+        size_neighbords += tmp->weight;
+        tmp = tmp->next;
+    }
+    tab_handle[vertex1] = local_cost.push(cost_function(vertex1, cost/size_neighbords));
+    cost = 0;
+    size_neighbords = 0;
+    label = bucket.label[vertex2];
+    tmp = graph.array[vertex2].head;
+    while (tmp != NULL) {
+        if (bucket.label[tmp->dest] != label) {
+            cost += tmp->weight;
+        }
+        nodes_to_update.insert(tmp->dest);
+        size_neighbords += tmp->weight;
+        tmp = tmp->next;
+    }
+    local_cost.update(tab_handle[vertex2],cost_function(vertex2, cost/size_neighbords));
+    for (auto i : nodes_to_update) {
         float cost = 0;
         float size_neighbords = 0;
         int label = bucket.label[i];
@@ -131,9 +161,23 @@ void Solver::update_costs(){
             size_neighbords += neighbor->weight;
             neighbor = neighbor->next;
         }
-        local_cost.push_back(make_pair(i, cost/size_neighbords));
+        local_cost.update(tab_handle[i],cost_function(i, cost/size_neighbords));
     }
     
+}
+void Solver::update_global_cost(){
+    global_cost = 0;
+    for (int i = 0; i < graph.V; ++i) {
+        int label = bucket.label[i];
+        AdjListNode *neighbor = graph.array[i].head;
+        while (neighbor != NULL ) {
+            if (bucket.label[neighbor->dest] != label) {
+                global_cost += neighbor->weight;
+            }
+            neighbor = neighbor->next;
+        }
+        
+    }
     
 }
 

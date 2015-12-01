@@ -11,7 +11,8 @@ using namespace std;
 
 int main(int argc, char** argv){
     string infile = "/Users/felipemoraes/KWayGraphPartitioning/graph_2.file";
-    int noparts = 10;
+    //string infile = "/Users/felipemoraes/KWayGraphPartitioning/src/input.txt";
+    int noparts = 2;
 
     if (argc < 2) {
         cout << "Usage: ./kpartition --infile [input_file] --noparts" << endl;
